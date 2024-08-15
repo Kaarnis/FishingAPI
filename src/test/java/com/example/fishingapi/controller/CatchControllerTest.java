@@ -2,6 +2,7 @@ package com.example.fishingapi.controller;
 
 import com.example.fishingapi.dto.CatchResponseDTO;
 import com.example.fishingapi.entity.Catch;
+import com.example.fishingapi.mapper.EntityMapper;
 import com.example.fishingapi.service.CatchService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CatchControllerTest {
 
     @Mock
-    CatchService catchService;  // Mocking the service layer
+    CatchService catchService;// Mocking the service layer
+
+    @Mock
+    EntityMapper entityMapper;  // Mocking the mapper layer
 
     @InjectMocks
     CatchController catchController;  // Injecting the mocked service into the controller
@@ -36,6 +40,10 @@ class CatchControllerTest {
 
         // Mocking service method to return the sample data
         Mockito.when(catchService.getAllCatches()).thenReturn(expectedCatches);
+
+        // Mocking mapper behavior to convert Catch entities to CatchResponseDTOs
+        Mockito.when(entityMapper.toCatchResponseDTO(catch1)).thenReturn(new CatchResponseDTO(1, "Salmon", 1000, 50, "Uljua"));
+        Mockito.when(entityMapper.toCatchResponseDTO(catch2)).thenReturn(new CatchResponseDTO(2, "Trout", 800, 45, "Oulu"));
 
         // Invoking the controller method
         ResponseEntity<List<CatchResponseDTO>> responseEntity = catchController.getAllCatches();

@@ -13,31 +13,32 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/catches")
 @Validated
 public class CatchController {
 
-    private final EntityMapper dtoToEntityMapper;
+    private final EntityMapper entityMapper;
 
     private final CatchService catchService;
 
-    public CatchController(EntityMapper dtoToEntityMapper, CatchService catchService) {
-        this.dtoToEntityMapper = dtoToEntityMapper;
+    public CatchController(EntityMapper entityMapper, CatchService catchService) {
+        this.entityMapper = entityMapper;
         this.catchService = catchService;
     }
 
     @PostMapping
     public ResponseEntity<CatchResponseDTO> catchFish(@Valid @RequestBody CatchRequestDTO catchRequest) {
         // Convert DTO to entity
-        Catch catchEntity = dtoToEntityMapper.toCatchEntity(catchRequest);
+        Catch catchEntity = entityMapper.toCatchEntity(catchRequest);
 
         // Save the entity
         Catch savedCatch = catchService.catchFish(catchEntity);
 
         // Convert saved entity to DTO
-        CatchResponseDTO responseDTO = dtoToEntityMapper.toCatchResponseDTO(savedCatch);
+        CatchResponseDTO responseDTO = entityMapper.toCatchResponseDTO(savedCatch);
 
         // Return the response with 201 Created status
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
@@ -48,7 +49,7 @@ public class CatchController {
         Catch catchEntity = catchService.getCatchById(id);
 
         // Convert entity to DTO using the mapper
-        CatchResponseDTO responseDTO = dtoToEntityMapper.toCatchResponseDTO(catchEntity);
+        CatchResponseDTO responseDTO = entityMapper.toCatchResponseDTO(catchEntity);
 
         return new ResponseEntity<>(responseDTO, HttpStatus.OK);
     }
@@ -58,7 +59,9 @@ public class CatchController {
         List<Catch> catches = catchService.getAllCatches();
 
         // Convert entities to DTOs using the mapper
-        List<CatchResponseDTO> responseDTOs = dtoToEntityMapper.toCatchResponseDTOs(catches);
+        List<CatchResponseDTO> responseDTOs = catches.stream()
+                .map(entityMapper::toCatchResponseDTO)
+                .collect(Collectors.toList());
 
         return new ResponseEntity<>(responseDTOs, HttpStatus.OK);
     }
