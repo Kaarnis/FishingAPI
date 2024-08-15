@@ -1,6 +1,6 @@
 package com.example.fishingapi;
 
-import com.example.fishingapi.dto.Catch;
+import com.example.fishingapi.entity.Catch;
 import com.example.fishingapi.repository.CatchRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,6 @@ public class CatchService {
     }
 
     public List<Catch> getAllCatches() {
-        return catchRepository.getAllCatches();
+        return catchRepository.findAll();
     }
 }
