@@ -1,10 +1,13 @@
 package com.example.fishingapi.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.*;
-
-import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @AllArgsConstructor
@@ -14,10 +17,10 @@ import java.math.BigDecimal;
 public class Catch {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String fish;
-    private String weight;
+    private Integer weight;
     private Integer length;
     private String location;
-
 }
